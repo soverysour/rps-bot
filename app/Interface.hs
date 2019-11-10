@@ -125,6 +125,7 @@ helloPostArgs =
     [ "game" .= gameObj
     , "playerName" .= ("pstrmybot" :: Text)
     , "eventCallback" .= ("http://7deba681.ngrok.io/cb" :: Text)
+    , "totalRounds" .= (150 :: Int)
     ]
   where
     gameObj =
