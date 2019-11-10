@@ -1,0 +1,64 @@
+name:                rps-bot
+version:             0.1.0.0
+github:              "soverysour/rps-bot"
+license:             BSD3
+author:              "soverysour"
+maintainer:          "sebi.f@tuta.io"
+copyright:           "BSD3"
+
+extra-source-files:
+- README.md
+
+ghc-options:
+  - -Weverything
+  - -Werror
+  - -Wno-safe
+  - -Wno-unsafe
+  - -Wno-missing-import-lists
+  - -Wno-missed-specialisations
+  - -Wno-all-missed-specialisations
+  - -Wno-missing-local-signatures
+  - -Wno-monomorphism-restriction
+
+default-extensions:
+  - OverloadedStrings
+  - NoImplicitPrelude
+  - DeriveGeneric
+  - ScopedTypeVariables
+  - TypeApplications
+  - TypeOperators
+  - LambdaCase
+
+synopsis:            Rock-paper-scissors playing bot.
+category:            ai
+
+description:         Please see the README on GitHub at <https://github.com/soverysour/rps-bot#readme>
+
+dependencies:
+- base >= 4.7 && < 5
+- classy-prelude
+- aeson
+- http-conduit
+- vector
+- containers
+- random
+
+library:
+  source-dirs: src
+
+executables:
+  rps-bot-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N
+    dependencies:
+    - rps-bot
+    - classy-prelude
+    - scotty
+    - concurrency
+    - unordered-containers
+    - text
+    - wai-cors
