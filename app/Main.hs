@@ -7,6 +7,7 @@ module Main
 import           ClassyPrelude
 import           Control.Concurrent             (forkIO, threadDelay)
 import           Control.Concurrent.Classy.Chan as Chan
+import           Text.Pretty.Simple   (pPrint)
 
 import           Bot
 import           Defs
@@ -21,6 +22,7 @@ loop ::
      PlayerIdentity -> NextRound -> Chan.Chan IO ChanContent -> Model -> IO ()
 loop identity nextRound chan model = do
   threadDelay 2000000
+  pPrint model
   ours <- performPlay identity nextRound model
   Chan.readChan chan >>= \case
     First payload -> do

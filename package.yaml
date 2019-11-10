@@ -62,3 +62,4 @@ executables:
     - unordered-containers
     - text
     - wai-cors
+    - pretty-simple
