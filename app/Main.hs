@@ -7,7 +7,7 @@ module Main
 import           ClassyPrelude
 import           Control.Concurrent             (forkIO, threadDelay)
 import           Control.Concurrent.Classy.Chan as Chan
-import           Text.Pretty.Simple   (pPrint)
+import           Text.Pretty.Simple             (pPrint)
 
 import           Bot
 import           Defs
@@ -16,13 +16,12 @@ import           Interface
 freshModel :: Model
 freshModel = mkModel predictionSize
   where
-    predictionSize = 2
+    predictionSize = 3
 
 loop ::
      PlayerIdentity -> NextRound -> Chan.Chan IO ChanContent -> Model -> IO ()
 loop identity nextRound chan model = do
   threadDelay 2000000
-  pPrint model
   ours <- performPlay identity nextRound model
   Chan.readChan chan >>= \case
     First payload -> do
@@ -30,8 +29,12 @@ loop identity nextRound chan model = do
       print payload
     Second (theirs, nextRound') ->
       let model' = learn theirs ours model
-       in loop identity nextRound' chan model'
-    Third () -> awaitBeginning chan freshModel
+       in do pPrint model'
+             loop identity nextRound' chan model'
+    Third () -> do
+      print ("Game done." :: Text)
+      pPrint model
+      awaitBeginning chan freshModel
 
 awaitBeginning :: Chan.Chan IO ChanContent -> Model -> IO ()
 awaitBeginning chan model = do

@@ -41,7 +41,7 @@ performPlay (gameId, playerId) nextRound model = do
       request' =
         setRequestBody
           (C.RequestBodyLBS $ encode body')
-          "POST http://201ca2f8.ngrok.io/play"
+          "POST http://go-bot-server.herokuapp.com/play"
   void $ httpNoBody request'
   return ours
 
@@ -50,7 +50,7 @@ notifyServer = do
   let request' =
         setRequestBody
           (C.RequestBodyLBS $ encode helloPostArgs)
-          "POST http://201ca2f8.ngrok.io/hello"
+          "POST http://go-bot-server.herokuapp.com/hello"
   eitherJson <- getResponseBody <$> httpJSONEither request'
   case eitherJson of
     Left err -> do
@@ -98,13 +98,13 @@ parseRoundFinished (Object obj) = do
   obj' <- "body" `HM.lookup` obj >>= unObject
   if tagName == "roundFinished"
     then do
-      roundResult <-
+      roundResults <-
         "roundResult" `HM.lookup` obj' >>= unObject >>= ("moves" `HM.lookup`) >>=
-        unObject >>=
-        ("pstrmybot" `HM.lookup`) >>=
-        unObject >>=
-        ("value" `HM.lookup`) >>=
-        unText >>=
+        unObject
+      let roundResults' =
+            fmap snd . head' . HM.toList $ HM.delete "pstrmybot" roundResults
+      roundResult <-
+        roundResults' >>= unObject >>= ("value" `HM.lookup`) >>= unText >>=
         unRps
       nextRound <- "nextRound" `HM.lookup` obj' >>= unInt
       return $ Second (roundResult, nextRound)
@@ -124,15 +124,15 @@ helloPostArgs =
   object
     [ "game" .= gameObj
     , "playerName" .= ("pstrmybot" :: Text)
-    , "eventCallback" .= ("http://7deba681.ngrok.io/cb" :: Text)
-    , "totalRounds" .= (150 :: Int)
+    , "eventCallback" .= ("http://d97a7804.ngrok.io/cb" :: Text)
     ]
   where
     gameObj =
       object
         [ "name" .= ("rps" :: Text)
-        , "connectionToken" .= ("op2" :: Text)
+        , "connectionToken" .= ("omega" :: Text)
         , "numberOfTotalPlayers" .= (2 :: Int)
+        , "totalRounds" .= (101 :: Int)
         ]
 
 unText :: Value -> Maybe Text
@@ -154,3 +154,7 @@ unRps txt =
     "paper"    -> Just Paper
     "scissors" -> Just Scissors
     _          -> Nothing
+
+head' :: [a] -> Maybe a
+head' []    = Nothing
+head' (x:_) = Just x
