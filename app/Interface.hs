@@ -124,15 +124,15 @@ helloPostArgs =
   object
     [ "game" .= gameObj
     , "playerName" .= ("pstrmybot" :: Text)
-    , "eventCallback" .= ("http://d97a7804.ngrok.io/cb" :: Text)
+    , "eventCallback" .= ("http://97ac4b66.ngrok.io/cb" :: Text)
     ]
   where
     gameObj =
       object
         [ "name" .= ("rps" :: Text)
-        , "connectionToken" .= ("omega" :: Text)
+        , "connectionToken" .= ("patronum" :: Text)
         , "numberOfTotalPlayers" .= (2 :: Int)
-        , "totalRounds" .= (101 :: Int)
+        , "totalRounds" .= (51 :: Int)
         ]
 
 unText :: Value -> Maybe Text

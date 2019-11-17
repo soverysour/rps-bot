@@ -7,8 +7,9 @@ module Bot
   ) where
 
 import           ClassyPrelude
-import qualified Data.Map.Strict as M
-import qualified Data.Vector     as V
+import qualified Data.List.NonEmpty as NE
+import qualified Data.Map.Strict    as M
+import qualified Data.Vector        as V
 import           System.Random
 
 {-
@@ -88,17 +89,8 @@ highest outcomes =
   let rockO = (getScore Rock outcomes, Rock)
       paperO = (getScore Paper outcomes, Paper)
       scissorsO = (getScore Scissors outcomes, Scissors)
-      options = sortBy (flip compare) [rockO, paperO, scissorsO]
-   in snd . fromMaybe (0, Rock) . head' $ drop' 1 options
-
-head' :: [a] -> Maybe a
-head' []    = Nothing
-head' (x:_) = Just x
-
-drop' :: Word -> [a] -> [a]
-drop' _ []     = []
-drop' 0 x      = x
-drop' t (_:xs) = drop' (t - 1) xs
+      options = sortBy (flip compare) $ rockO NE.:| [paperO, scissorsO]
+   in snd . NE.head $ options
 
 beat :: Rps -> Rps -> Bool
 beat Paper Rock     = True
